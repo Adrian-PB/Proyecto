@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Masas</title>
+    <style>
+        #resultado, #resultado1 {
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+        }  
+    </style>
+</head>
+<body>
+    <main>
+        <div class="px-4 py-2 my-2 text-center border-bottom">
+            <img class="d-block mx-auto mb-2" src="logo.png" alt="Logo de la página de conversiones" width="30%">
+            <h1 class="display-5 fw-bold">LIBRAS - ONZAS</h1>
+            <div class="col-lg-6 mx-auto">
+                <p class="lead mb-0">Conversiones a libras y onzas</p>
+                <p class="lead mb-4">Programado por: Adrian Palacios</p>
+            </div>
+        </div>
+
+        <div class="b-example-divider"></div>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-md-4 offset-md-4">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label" for="kilogramos">Kilogramos: <span id="lbl-kilogramos">1</span></label>
+                            <input class="form-range" type="range" min="1" max="500" id="kilogramos" aria-label="Selecciona el peso en kilogramos" oninput="cambiarLibras();">
+                            <div class="form-text">Desliza para cambiar el valor de los Kilogramos</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="resultado">Resultado</label>
+                            <div id="resultado">
+                                1 Kilogramo equivale a 2.205 libras
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="b-example-divider"></div>
+
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-md-4 offset-md-4">
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label" for="kilogramos1">Kilogramos: <span id="lbl-kilogramos1">1</span></label>
+                            <input class="form-range" type="range" min="1" max="500" id="kilogramos1" aria-label="Selecciona el peso en kilogramos" oninput="cambiarOnzas();">
+                            <div class="form-text">Desliza para cambiar el valor de los Kilogramos</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="resultado1">Resultado</label>
+                            <div id="resultado1">
+                                1 Kilogramo equivale a 35.274 onzas
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
+    
+    <script type="text/javascript">
+        var modelo = null;
+        var modelo1 = null;
+
+        (async () => {
+            console.log("Cargando modelo de libras");
+            modelo = await tf.loadLayersModel('model.json');
+            console.log("Modelo de libras cargado");
+        })();
+
+        (async () => {
+            console.log("Cargando modelo de onzas");
+            modelo1 = await tf.loadLayersModel('model.json');
+            console.log("Modelo de onzas cargado");
+        })();
+
+        function cambiarLibras() {
+            var kilogramos = document.getElementById("kilogramos").value;
+            document.getElementById("lbl-kilogramos").innerHTML = kilogramos;
+
+            if (modelo != null) {
+                var tensor = tf.tensor1d([parseInt(kilogramos)]);
+                var prediccion = modelo.predict(tensor).dataSync();
+                prediccion = prediccion.toFixed(2);  // Redondear a dos decimales
+                document.getElementById("resultado").innerHTML = kilogramos + " kg son: " + prediccion + " libras";
+            } else {
+                document.getElementById("resultado").innerHTML = "Cargando modelo, por favor espera...";
+            }
+        }
+
+        function cambiarOnzas() {
+            var kilogramos = document.getElementById("kilogramos1").value;
+            document.getElementById("lbl-kilogramos1").innerHTML = kilogramos;
+
+            if (modelo1 != null) {
+                var tensor = tf.tensor1d([parseInt(kilogramos)]);
+                var prediccion = modelo1.predict(tensor).dataSync();
+                prediccion = prediccion.toFixed(2);  // Redondear a dos decimales
+                document.getElementById("resultado1").innerHTML = kilogramos + " kg son: " + prediccion + " onzas";
+            } else {
+                document.getElementById("resultado1").innerHTML = "Cargando modelo, por favor espera...";
+            }
+        }
+    </script>
+</body>
+</html>
