@@ -65,50 +65,21 @@
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
-    
     <script type="text/javascript">
-        var modelo = null;
-        var modelo1 = null;
-
-        (async () => {
-            console.log("Cargando modelo de libras");
-            modelo = await tf.loadLayersModel('model.json');
-            console.log("Modelo de libras cargado");
-        })();
-
-        (async () => {
-            console.log("Cargando modelo de onzas");
-            modelo1 = await tf.loadLayersModel('model.json');
-            console.log("Modelo de onzas cargado");
-        })();
-
         function cambiarLibras() {
             var kilogramos = document.getElementById("kilogramos").value;
             document.getElementById("lbl-kilogramos").innerHTML = kilogramos;
-
-            if (modelo != null) {
-                var tensor = tf.tensor1d([parseInt(kilogramos)]);
-                var prediccion = modelo.predict(tensor).dataSync();
-                prediccion = prediccion.toFixed(2);
-                document.getElementById("resultado").innerHTML = kilogramos + " kg son: " + prediccion + " libras";
-            } else {
-                document.getElementById("resultado").innerHTML = "Cargando modelo, por favor espera...";
-            }
+            
+            var libras = (kilogramos * 2.20462).toFixed(2);
+            document.getElementById("resultado").innerHTML = kilogramos + " kg son: " + libras + " libras";
         }
 
         function cambiarOnzas() {
             var kilogramos = document.getElementById("kilogramos1").value;
             document.getElementById("lbl-kilogramos1").innerHTML = kilogramos;
-
-            if (modelo1 != null) {
-                var tensor = tf.tensor1d([parseInt(kilogramos)]);
-                var prediccion = modelo1.predict(tensor).dataSync();
-                prediccion = prediccion.toFixed(2);
-                document.getElementById("resultado1").innerHTML = kilogramos + " kg son: " + prediccion + " onzas";
-            } else {
-                document.getElementById("resultado1").innerHTML = "Cargando modelo, por favor espera...";
-            }
+            
+            var onzas = (kilogramos * 35.27396).toFixed(2);
+            document.getElementById("resultado1").innerHTML = kilogramos + " kg son: " + onzas + " onzas";
         }
     </script>
 </body>
